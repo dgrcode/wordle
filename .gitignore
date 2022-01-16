@@ -1,0 +1,14 @@
+# Build files
+dist
+
+# Node modules
+node_modules
+
+# Yarn stuff
+yarn-error.log
+
+# VSCode files
+.vscode
+
+# Mac stuff
+.DS_Store
