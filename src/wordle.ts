@@ -1,7 +1,7 @@
 import { DEBUG } from "./cli";
+import { Letter } from "./types";
 import {
   isLowerCase,
-  Letter,
   sortWordsByLetterProbabilityFine,
 } from "./candidatesSorting";
 

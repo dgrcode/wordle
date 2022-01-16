@@ -2,24 +2,18 @@ import spanishWords from "an-array-of-spanish-words";
 import englishWords from "an-array-of-english-words";
 import chalk, { ChalkFunction } from "chalk";
 import inquirer, { InputQuestionOptions } from "inquirer";
-import { isLowerCase, Letter, WordWithPointsCombo } from "./candidatesSorting";
+import {
+  Language,
+  LanguageDescriptor,
+  Letter,
+  PositionStatus,
+  WordWithPointsCombo,
+} from "./types";
+import { isLowerCase } from "./candidatesSorting";
 import wordl from "./wordle";
 import { initCache } from "./utils/cache";
 
 export const DEBUG = false;
-
-/**
- * - wrong: the given candidate has the wrong letter in that position
- * - letter: the given candidate has the right letter, but in the wrong position
- * - good: the given candidate has the right letter in that position
- */
-type PositionStatus = "wrong" | "letter" | "good";
-export type Language = "en" | "es"; // supported languages
-type LanguageDescriptor = {
-  label: string;
-  emoji: string;
-  words: string[];
-};
 
 const statusToChalkMap: { [key in PositionStatus]: ChalkFunction } = {
   wrong: chalk.bgGray.white.bold,

@@ -1,8 +1,13 @@
 import { cacheHasEntry, getCacheEntry, setCacheEntry } from "./utils/cache";
 import { performance } from "perf_hooks";
+import {
+  Letter,
+  LetterProbabilities,
+  WordSetByLetter,
+  WordWithPointsCombo,
+} from "./types";
 import { sha256 } from "./utils/crypto";
-import { Language } from "src/cli";
-import { overrideStdOut, progressBar } from "./utils/cli";
+import { progressBar } from "./utils/cli";
 const DEBUG = false;
 const PERFORMANCE_LOGS = false;
 const CACHE_LOGS = false;
@@ -10,40 +15,6 @@ const CACHE_LOGS = false;
 if (DEBUG) {
   console.log("DEBUG mode is on");
 }
-
-export type Letter =
-  | "a"
-  | "b"
-  | "c"
-  | "d"
-  | "e"
-  | "f"
-  | "g"
-  | "h"
-  | "i"
-  | "j"
-  | "k"
-  | "l"
-  | "m"
-  | "n"
-  | "ñ"
-  | "o"
-  | "p"
-  | "q"
-  | "r"
-  | "s"
-  | "t"
-  | "u"
-  | "v"
-  | "w"
-  | "x"
-  | "y"
-  | "z";
-
-type LetterProbabilityDescriptor = { amount: number; probability: number };
-type LetterProbabilities = { [key in Letter]?: LetterProbabilityDescriptor };
-type WordSetByLetter = { [key in Letter]?: Set<string> };
-export type WordWithPointsCombo = [string, number];
 
 export const getWordLettersWithoutRepetition = (word: string): Letter[] =>
   Array.from(new Set(word.split(""))) as Letter[];

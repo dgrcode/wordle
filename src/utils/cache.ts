@@ -1,11 +1,6 @@
-import { Language } from "src/cli";
 import fs from "fs";
-import { WordWithPointsCombo } from "src/candidatesSorting";
 import path from "path";
-
-type Cache = {
-  [key: string]: WordWithPointsCombo[];
-};
+import { Cache, Language, WordWithPointsCombo } from "src/types";
 
 let cache: Cache = {};
 let isCacheInit = false;

@@ -33,16 +33,3 @@ export const progressBar = (
     }${extra}`
   );
 };
-
-// let status = 0;
-// const max = 20;
-// const tick = () => {
-//   status++;
-
-//   if (status < max) {
-//     setTimeout(tick, 100);
-//   }
-//   progressBar(status, max);
-// };
-
-// tick();
