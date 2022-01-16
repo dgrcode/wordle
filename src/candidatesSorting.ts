@@ -6,6 +6,7 @@ import {
   WordSetByLetter,
   WordWithPointsCombo,
 } from "./types";
+import logs from "./loggingControls";
 import { sha256 } from "./utils/crypto";
 import { progressBar } from "./utils/cli";
 import {
@@ -14,12 +15,7 @@ import {
   getWordCancelledSetForLetters,
 } from "./utils/words";
 
-// TODO move these constants to a global place and export to access from other files
-const DEBUG = false;
-const PERFORMANCE_LOGS = false;
-const CACHE_LOGS = false;
-
-if (DEBUG) {
+if (logs.debug) {
   console.log("DEBUG mode is on");
 }
 
@@ -42,7 +38,7 @@ const getWordPointsFine = (
 ) => {
   const wordsCancelledByWord = new Set([word]);
   getWordLettersWithoutRepetition(word).forEach((letter) => {
-    if (DEBUG) {
+    if (logs.debug) {
       console.log(
         "letter:",
         letter,
@@ -50,13 +46,15 @@ const getWordPointsFine = (
         wordSetCancelledByLetter[letter]?.size
       );
     }
+
     wordSetCancelledByLetter[letter]?.forEach((cancelledWord) =>
       wordsCancelledByWord.add(cancelledWord)
     );
   });
 
   const wp = wordsCancelledByWord.size;
-  if (DEBUG) {
+
+  if (logs.debug) {
     console.log("word:", word, "points:", wp);
   }
 
@@ -89,10 +87,12 @@ export const sortWordsByLetterProbability = (
       getWordPoints(word, letterProbability),
     ])
     .sort(([a, aPoints], [b, bPoints]) => bPoints - aPoints);
+
   const t1 = performance.now();
-  if (PERFORMANCE_LOGS) {
+  if (logs.performance) {
     console.log(`PERF: took ${t1 - t0}ms to normal sort the words`);
   }
+
   return sortedWords;
 };
 
@@ -100,41 +100,47 @@ export const sortWordsByLetterProbabilityFine = (
   wordArray: string[],
   nonExcludingLetters: Set<Letter> = new Set()
 ) => {
+  // try to get results from cache
   const wordArrayHash = sha256({ wordArray, nonExcludingLetters });
   if (cacheHasEntry(wordArrayHash)) {
-    if (CACHE_LOGS) {
+    if (logs.cache) {
       console.log(`CACHE: Getting entry ${wordArrayHash} from cache`);
     }
     return getCacheEntry(wordArrayHash);
-  } else if (CACHE_LOGS) {
+  } else if (logs.cache) {
     console.log(`CACHE: Entry ${wordArrayHash} not found on cache`);
   }
+
+  // it wasn't in cache, compute the results
   const wordSetCancelledByLetter = getWordCancelledSetForLetters(
     wordArray,
     nonExcludingLetters
   );
   const t0 = performance.now();
-  if (PERFORMANCE_LOGS) {
+  if (logs.performance) {
     console.log("");
   }
+
   const sortedWords = wordArray
     .map<WordWithPointsCombo>((word, idx) => {
-      if (PERFORMANCE_LOGS) {
+      if (logs.performance) {
         progressBar(
           idx,
           wordArray.length,
           `${performance.now() - t0}ms to fine`
         );
       }
+
       return [word, getWordPointsFine(word, wordSetCancelledByLetter)];
     })
-    .sort(([a, aPoints], [b, bPoints]) => bPoints - aPoints);
+    .sort(([_a, aPoints], [_b, bPoints]) => bPoints - aPoints);
+
   setCacheEntry(wordArrayHash, sortedWords);
-  if (CACHE_LOGS) {
+  if (logs.cache) {
     console.log(`CACHE: Entry ${wordArrayHash} set in cache`);
   }
   const t1 = performance.now();
-  if (PERFORMANCE_LOGS) {
+  if (logs.performance) {
     console.log(`PERF: took ${t1 - t0}ms to fine sort the words`);
   }
   return sortedWords;
@@ -147,23 +153,26 @@ export const sortWordsByLetterProbabilityBruteForce = (
   // TODO take non-excluding letters into account
   // TODO - explain what's a non-excluding letter
   const t0 = performance.now();
-  if (PERFORMANCE_LOGS) {
+  if (logs.performance) {
     console.log("");
   }
+
   const sortedWords = wordArray
     .map<WordWithPointsCombo>((word, idx) => {
-      if (PERFORMANCE_LOGS) {
+      if (logs.performance) {
         progressBar(
           idx,
           wordArray.length,
           `${performance.now() - t0}ms to brute-force`
         );
       }
+
       return [word, getWordPointsBruteForce(word, wordArray)];
     })
-    .sort(([a, aPoints], [b, bPoints]) => bPoints - aPoints);
+    .sort(([_a, aPoints], [_b, bPoints]) => bPoints - aPoints);
+
   const t1 = performance.now();
-  if (PERFORMANCE_LOGS) {
+  if (logs.performance) {
     console.log(`PERF: took ${t1 - t0}ms to brute force sort the words`);
   }
   return sortedWords;

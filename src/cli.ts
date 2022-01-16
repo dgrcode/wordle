@@ -9,11 +9,10 @@ import {
   PositionStatus,
   WordWithPointsCombo,
 } from "./types";
-import { isLowerCase } from "./utils/words";
 import wordl from "./wordle";
+import logs from "./loggingControls";
+import { isLowerCase } from "./utils/words";
 import { initCache } from "./utils/cache";
-
-export const DEBUG = false;
 
 const statusToChalkMap: { [key in PositionStatus]: ChalkFunction } = {
   wrong: chalk.bgGray.white.bold,
@@ -111,7 +110,7 @@ async function main() {
   const stackedVisualPatterns: string[] = [];
   let pattern;
   while (!hasFoundWord) {
-    if (DEBUG) {
+    if (logs.debug) {
       console.log("DEBUG: missingLetters", missingLetters);
       console.log("DEBUG: pattern", pattern);
     }
