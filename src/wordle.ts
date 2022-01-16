@@ -1,7 +1,7 @@
 import { Letter } from "./types";
 import logs from "./loggingControls";
 import { isLowerCase } from "./utils/words";
-import { sortWordsByLetterProbabilityFine } from "./candidatesSorting";
+import { sortWordsByWordsRemoved } from "./candidatesSorting";
 
 // TODOs
 // - show the words that increase the most from one round to the next
@@ -79,7 +79,7 @@ const wordleRound = (
 
   const nonExcludingLetters = new Set(patternLetters); // letters that don't exclude words
 
-  return sortWordsByLetterProbabilityFine(candidates, nonExcludingLetters);
+  return sortWordsByWordsRemoved(candidates, nonExcludingLetters);
 };
 
 export default wordleRound;

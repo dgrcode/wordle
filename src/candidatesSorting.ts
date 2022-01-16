@@ -19,7 +19,10 @@ if (logs.debug) {
   console.log("DEBUG mode is on");
 }
 
-const getWordPoints = (
+/**
+ * Letter Probability Algorithm
+ */
+const getWordPointsByLetterProbability = (
   word: string,
   letterProbability: LetterProbabilities
 ) => {
@@ -32,7 +35,34 @@ const getWordPoints = (
   return wp;
 };
 
-const getWordPointsFine = (
+export const sortWordsByLetterProbability = (
+  wordArray: string[],
+  nonExcludingLetters: Set<Letter>
+) => {
+  const letterProbability = getLetterProbabilitiesForWords(
+    wordArray,
+    nonExcludingLetters
+  );
+  const t0 = performance.now();
+  const sortedWords = wordArray
+    .map<WordWithPointsCombo>((word) => [
+      word,
+      getWordPointsByLetterProbability(word, letterProbability),
+    ])
+    .sort(([a, aPoints], [b, bPoints]) => bPoints - aPoints);
+
+  const t1 = performance.now();
+  if (logs.performance) {
+    console.log(`PERF: took ${t1 - t0}ms to normal sort the words`);
+  }
+
+  return sortedWords;
+};
+
+/**
+ * Words Removed Algorithm
+ */
+const getWordsRemovedPoints = (
   word: string,
   wordSetCancelledByLetter: WordSetByLetter
 ) => {
@@ -61,42 +91,7 @@ const getWordPointsFine = (
   return wp;
 };
 
-const getWordPointsBruteForce = (word: string, words: string[]): number => {
-  const lettersInWord = getWordLettersWithoutRepetition(word);
-  return words.reduce((acc, comparingWord) => {
-    const comparingLetters = new Set(comparingWord.split(""));
-    const wordWouldCancel = lettersInWord.some((letter) =>
-      comparingLetters.has(letter)
-    );
-    return acc + (wordWouldCancel ? 1 : 0);
-  }, 0);
-};
-
-export const sortWordsByLetterProbability = (
-  wordArray: string[],
-  nonExcludingLetters: Set<Letter>
-) => {
-  const letterProbability = getLetterProbabilitiesForWords(
-    wordArray,
-    nonExcludingLetters
-  );
-  const t0 = performance.now();
-  const sortedWords = wordArray
-    .map<WordWithPointsCombo>((word) => [
-      word,
-      getWordPoints(word, letterProbability),
-    ])
-    .sort(([a, aPoints], [b, bPoints]) => bPoints - aPoints);
-
-  const t1 = performance.now();
-  if (logs.performance) {
-    console.log(`PERF: took ${t1 - t0}ms to normal sort the words`);
-  }
-
-  return sortedWords;
-};
-
-export const sortWordsByLetterProbabilityFine = (
+export const sortWordsByWordsRemoved = (
   wordArray: string[],
   nonExcludingLetters: Set<Letter> = new Set()
 ) => {
@@ -131,7 +126,7 @@ export const sortWordsByLetterProbabilityFine = (
         );
       }
 
-      return [word, getWordPointsFine(word, wordSetCancelledByLetter)];
+      return [word, getWordsRemovedPoints(word, wordSetCancelledByLetter)];
     })
     .sort(([_a, aPoints], [_b, bPoints]) => bPoints - aPoints);
 
@@ -146,7 +141,24 @@ export const sortWordsByLetterProbabilityFine = (
   return sortedWords;
 };
 
-export const sortWordsByLetterProbabilityBruteForce = (
+/**
+ * Brute force version of Words Removed Algorithm
+ */
+const getWordsRemovedPointsBruteForce = (
+  word: string,
+  words: string[]
+): number => {
+  const lettersInWord = getWordLettersWithoutRepetition(word);
+  return words.reduce((acc, comparingWord) => {
+    const comparingLetters = new Set(comparingWord.split(""));
+    const wordWouldCancel = lettersInWord.some((letter) =>
+      comparingLetters.has(letter)
+    );
+    return acc + (wordWouldCancel ? 1 : 0);
+  }, 0);
+};
+
+export const sortWordsByWordsRemovedBruteForce = (
   wordArray: string[],
   nonExcludingLetters: Set<Letter> = new Set()
 ) => {
@@ -167,7 +179,7 @@ export const sortWordsByLetterProbabilityBruteForce = (
         );
       }
 
-      return [word, getWordPointsBruteForce(word, wordArray)];
+      return [word, getWordsRemovedPointsBruteForce(word, wordArray)];
     })
     .sort(([_a, aPoints], [_b, bPoints]) => bPoints - aPoints);
 
