@@ -4,12 +4,16 @@ import { Cache, Language, WordWithPointsCombo } from "src/types";
 
 let cache: Cache = {};
 let isCacheInit = false;
-// TODO actually use the right language cache file
+let langInUse: Language;
 
 export const initCache = (langCode: Language) => {
-  const file = fs.readFileSync(path.resolve("./cache/es.json"), "utf-8");
+  const file = fs.readFileSync(
+    path.resolve(`./cache/${langCode}.json`),
+    "utf-8"
+  );
   cache = JSON.parse(file);
   isCacheInit = true;
+  langInUse = langCode;
 };
 
 const saveCache = (data: Cache) => {
@@ -18,7 +22,10 @@ const saveCache = (data: Cache) => {
       "Cache has not been initialized. Make sure you are initializing it."
     );
   }
-  fs.writeFileSync(path.resolve("./cache/es.json"), JSON.stringify(data));
+  fs.writeFileSync(
+    path.resolve(`./cache/${langInUse}.json`),
+    JSON.stringify(data)
+  );
 };
 
 export const getCacheEntry = (key: string) => {
@@ -29,6 +36,7 @@ export const getCacheEntry = (key: string) => {
   }
   return cache[key];
 };
+
 export const cacheHasEntry = (key: string) => {
   if (!isCacheInit) {
     throw new Error(
@@ -37,6 +45,7 @@ export const cacheHasEntry = (key: string) => {
   }
   return cache.hasOwnProperty(key);
 };
+
 export const setCacheEntry = (key: string, value: WordWithPointsCombo[]) => {
   cache[key] = value;
   saveCache(cache);
