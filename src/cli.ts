@@ -9,7 +9,7 @@ import {
   PositionStatus,
   WordWithPointsCombo,
 } from "./types";
-import { isLowerCase } from "./candidatesSorting";
+import { isLowerCase } from "./utils/words";
 import wordl from "./wordle";
 import { initCache } from "./utils/cache";
 

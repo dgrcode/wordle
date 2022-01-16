@@ -1,9 +1,7 @@
 import { DEBUG } from "./cli";
 import { Letter } from "./types";
-import {
-  isLowerCase,
-  sortWordsByLetterProbabilityFine,
-} from "./candidatesSorting";
+import { isLowerCase } from "./utils/words";
+import { sortWordsByLetterProbabilityFine } from "./candidatesSorting";
 
 // TODOs
 // - show the words that increase the most from one round to the next
