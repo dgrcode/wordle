@@ -1,3 +1,4 @@
+import { performance } from "perf_hooks";
 import { Letter, LetterProbabilities, WordSetByLetter } from "src/types";
 
 // TODO take this out of here. Adding temporarily for the linter
