@@ -9,7 +9,7 @@ import {
   PositionStatus,
   WordWithPointsCombo,
 } from "./types";
-import wordl from "./wordle";
+import solver from "./wordleSolver";
 import logs from "./loggingControls";
 import { isLowerCase } from "./utils/words";
 import { initCache } from "./utils/cache";
@@ -116,7 +116,7 @@ async function main() {
     }
 
     // show candidates
-    const candidatesWithPoints: WordWithPointsCombo[] = wordl(
+    const candidatesWithPoints: WordWithPointsCombo[] = solver(
       candidates,
       missingLetters,
       pattern

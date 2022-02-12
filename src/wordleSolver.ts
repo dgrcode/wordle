@@ -8,7 +8,7 @@ import { sortWordsByWordsRemoved } from "./candidatesSorting";
 
 const wordSize = 5;
 
-const wordleRound = (
+const roundSolver = (
   remainingWords: string[],
   missingLetters: Letter[],
   pattern?: string
@@ -82,4 +82,4 @@ const wordleRound = (
   return sortWordsByWordsRemoved(candidates, nonExcludingLetters);
 };
 
-export default wordleRound;
+export default roundSolver;
