@@ -72,10 +72,12 @@ const roundSolver = (
       return true;
     });
 
-  console.log(
-    "Candidates passing filters (letters and pattern):",
-    candidates.length
-  );
+  if (logs.debug) {
+    console.log(
+      "Candidates passing filters (letters and pattern):",
+      candidates.length
+    );
+  }
 
   const nonExcludingLetters = new Set(patternLetters); // letters that don't exclude words
 

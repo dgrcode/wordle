@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "watch": "tsc -w",
-    "cli": "node dist/cli.js"
+    "cli": "node dist/cli.js",
+    "play": "node dist/wordlePlayer.js"
   },
   "dependencies": {
     "an-array-of-english-words": "^2.0.0",

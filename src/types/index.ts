@@ -58,3 +58,8 @@ export type WordWithPointsCombo = [string, number];
 export type Cache = {
   [key: string]: WordWithPointsCombo[];
 };
+
+export type Result = "green" | "yellow" | "gray";
+
+export type WordleResult = Array<Result> &
+  [Result, Result, Result, Result, Result];
