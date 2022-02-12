@@ -6,6 +6,7 @@
   "license": "MIT",
   "scripts": {
     "watch": "tsc -w",
+    "compile": "tsc",
     "cli": "node dist/cli.js",
     "play": "node dist/wordlePlayer.js"
   },
